@@ -5,7 +5,8 @@ module.exports = (sequelize, Sequelize) => {
     },
     nik: {
       type: Sequelize.STRING,
-      primaryKey: true,
+      allowNull: false,
+      unique: true,
     },
     jumlah_uttp: {
       type: Sequelize.INTEGER,

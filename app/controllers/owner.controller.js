@@ -54,11 +54,11 @@ exports.findOne = (req, res) => {
 };
 
 exports.update = (req, res) => {
-  const nik = req.params.nik;
-  const {nama, jumlah_uttp} = req.body;
+  const oldNik = req.params.nik;
+  const {nama, nik, jumlah_uttp} = req.body;
 
-  Owner.update({nama, jumlah_uttp}, {
-    where: {nik: nik},
+  Owner.update({nama, nik, jumlah_uttp}, {
+    where: {nik: oldNik},
   }).then((num) => {
     if (num == 1) {
       res.send({
@@ -71,7 +71,7 @@ exports.update = (req, res) => {
     }
   }).catch((err) => {
     res.status(500).send({
-      message: 'Error updating owner with nik=' + nik,
+      message: `Duplicate Entry of NIK = ${nik}.`,
     });
   });
 };
