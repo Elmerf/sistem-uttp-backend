@@ -36,13 +36,17 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
   const nik = req.params.nik;
-  Owner.findByPk(nik)
+  Owner.findOne({
+    where: {
+      nik: nik,
+    },
+  })
       .then((data) => {
         if (data) {
           res.send(data);
         } else {
           res.status(404).send({
-            message: `Cannot find owner with nik=${nik}.`,
+            message: `Cannot find owner with nik = ${nik}.`,
           });
         }
       })
