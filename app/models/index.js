@@ -25,10 +25,12 @@ db.dataUTTPs = require('./data-uttp.model')(sequelize, Sequelize);
 
 db.owners.hasMany(db.dataUTTPs, {
   foreignKey: 'nik_pemilik',
+  sourceKey: 'nik',
   as: 'data_uttps',
 });
 db.dataUTTPs.belongsTo(db.owners, {
   foreignKey: 'nik_pemilik',
+  targetKey: 'nik',
   as: 'pemilik',
 });
 
