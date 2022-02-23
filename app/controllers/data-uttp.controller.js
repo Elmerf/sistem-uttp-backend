@@ -59,7 +59,10 @@ exports.findAll = (req, res) => {
 };
 
 exports.findOne = (req, res) => {
-  Owner.findByPk(req.params.nik, {
+  Owner.findOne({
+    where: {
+      nik: req.params.nik,
+    },
     include: ['data_uttps'],
   }).then((data) => {
     res.send(data);
