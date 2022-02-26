@@ -3,6 +3,23 @@ const db = require('../models');
 const DataUTTP = db.dataUTTPs;
 const Owner = db.owners;
 
+const updateCountData = (nik) => {
+  DataUTTP.count({
+    where: {
+      nik_pemilik: nik,
+    },
+  })
+      .then((result) => {
+        Owner.update({
+          jumlah_uttp: result,
+        }, {
+          where: {
+            nik: nik,
+          },
+        });
+      });
+};
+
 exports.create = (req, res) => {
   const nik = req.params.nik;
 
@@ -22,20 +39,7 @@ exports.create = (req, res) => {
       .then((data) => {
         res.send(data);
 
-        DataUTTP.count({
-          where: {
-            nik_pemilik: data.nik_pemilik,
-          },
-        })
-            .then((result) => {
-              Owner.update({
-                jumlah_uttp: result,
-              }, {
-                where: {
-                  nik: data.nik_pemilik,
-                },
-              });
-            });
+        updateCountData(data.nik_pemilik);
       })
       .catch((err) => {
         res.status(500).send({
@@ -108,23 +112,35 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const kode_uttp = req.params.kode_uttp;
 
-  DataUTTP.destroy({
+  DataUTTP.findOne({
+    attributes: ['nik_pemilik'],
     where: {
       kode_uttp: kode_uttp,
     },
-  }).then((num) => {
-    if (num == 1) {
-      res.send({
-        message: 'Deleted Succesfully!',
+  }).then((data) => {
+    DataUTTP.destroy({
+      where: {
+        kode_uttp: kode_uttp,
+      },
+    }).then((num) => {
+      if (num == 1) {
+        res.send({
+          message: 'Deleted Succesfully!',
+        });
+        updateCountData(data.nik_pemilik);
+      } else {
+        res.send({
+          message: 'Something is wrong, cannot delete!',
+        });
+      }
+    }).catch((err) => {
+      res.status(500).send({
+        message: 'Error deleting data uttp with kode_uttp=' + kode_uttp,
       });
-    } else {
-      res.send({
-        message: 'Something is wrong, cannot delete!',
-      });
-    }
+    });
   }).catch((err) => {
-    res.status(500).send({
-      message: 'Error deleting data uttp with kode_uttp=' + kode_uttp,
+    res.status(400).send({
+      message: 'Cannot Delete!',
     });
   });
 };
