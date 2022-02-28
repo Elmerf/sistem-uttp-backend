@@ -24,6 +24,7 @@ db.owners = require('./owner.model')(sequelize, Sequelize);
 db.dataUTTPs = require('./data-uttp.model')(sequelize, Sequelize);
 
 db.owners.hasMany(db.dataUTTPs, {
+  onDelete: 'CASCADE',
   foreignKey: 'nik_pemilik',
   sourceKey: 'nik',
   as: 'data_uttps',
