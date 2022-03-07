@@ -22,6 +22,8 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 db.owners = require('./owner.model')(sequelize, Sequelize);
 db.dataUTTPs = require('./data-uttp.model')(sequelize, Sequelize);
+db.users = require('./user.model')(sequelize, Sequelize);
+db.roles = require('./role.model')(sequelize, Sequelize);
 
 db.owners.hasMany(db.dataUTTPs, {
   onDelete: 'CASCADE',
@@ -34,5 +36,8 @@ db.dataUTTPs.belongsTo(db.owners, {
   targetKey: 'nik',
   as: 'pemilik',
 });
+
+db.users.belongsTo(db.roles);
+db.roles.hasOne(db.users);
 
 module.exports = db;

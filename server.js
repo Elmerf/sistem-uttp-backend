@@ -10,12 +10,28 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 const db = require('./app/models');
-db.sequelize.sync({force: true}).then(() => {
+const roles = db.roles;
+
+db.sequelize.sync().then(() => {
   console.log('Drop & Re-sync db.');
+  initial();
 });
+
+const initial = () => {
+  roles.upsert({
+    id: 1,
+    nama: 'admin',
+  });
+
+  roles.upsert({
+    id: 2,
+    nama: 'surveyor',
+  });
+};
 
 require('./app/routes/owner.route')(app);
 require('./app/routes/data-uttp.route')(app);
+require('./app/routes/auth.route')(app);
 
 app.get('/', (req, res) => {
   res.json('Welcome to Admin REST APIs');
